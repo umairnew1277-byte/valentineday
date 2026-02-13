@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine ❤️</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(to bottom,#ff1a1a,#cc0000);
+color:white;
+text-align:center;
+overflow:hidden;
+}
+
+.screen{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+button{
+padding:12px 25px;
+font-size:18px;
+border:none;
+border-radius:25px;
+margin:10px;
+cursor:pointer;
+}
+
+.yes-btn{background:white;color:red;}
+.no-btn{background:pink;color:darkred;position:absolute;}
+
+#loveScreen{display:none;}
+
+.characters{
+position:relative;
+width:100%;
+height:300px;
+}
+
+.character{
+font-size:80px;
+position:absolute;
+bottom:0;
+}
+
+#male{left:20px;}
+#female{right:20px;}
+
+#videoPopup{
+display:none;
+position:fixed;
+inset:0;
+background:black;
+z-index:999;
+}
+
+#loadingScreen{
+position:absolute;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+.loading-text{
+font-size:22px;
+color:pink;
+margin-bottom:20px;
+}
+
+.progress-container{
+width:70%;
+height:12px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:pink;
+transition:width 0.2s;
+}
+
+#loveVideo{
+width:100%;
+height:100%;
+object-fit:cover;
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="screen" id="firstScreen">
+<h1>Will You Be My Valentine? ❤️</h1>
+<button class="yes-btn" onclick="showLoveScreen()">Yes 💖</button>
+<button class="no-btn" id="noBtn">No 😜</button>
+</div>
+
+<div class="screen" id="loveScreen">
+<h2>Nimra ❤️ Umair ko kareeb lao 💕</h2>
+<div class="characters">
+<div class="character" id="male">👦</div>
+<div class="character" id="female">👧</div>
+</div>
+</div>
+
+<div id="videoPopup">
+
+<div id="loadingScreen">
+<div class="loading-text">💖 Tumhari Mohabbat Load Ho Rahi Hai... 💖</div>
+<div class="progress-container">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+</div>
+
+<video id="loveVideo" preload="auto" playsinline>
+<source src="nimi.mp4" type="video/mp4">
+</video>
+
+</div>
+
+<script>
+
+const noBtn=document.getElementById("noBtn");
+noBtn.onmouseover=moveButton;
+noBtn.ontouchstart=moveButton;
+
+function moveButton(){
+noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
+noBtn.style.top=Math.random()*(window.innerHeight-50)+"px";
+}
+
+function showLoveScreen(){
+document.getElementById("firstScreen").style.display="none";
+document.getElementById("loveScreen").style.display="flex";
+}
+
+const male=document.getElementById("male");
+const female=document.getElementById("female");
+const popup=document.getElementById("videoPopup");
+const video=document.getElementById("loveVideo");
+const loading=document.getElementById("loadingScreen");
+const bar=document.getElementById("progressBar");
+
+male.onmousemove=e=>{
+male.style.left=e.clientX-40+"px";
+check();
+};
+
+male.ontouchmove=e=>{
+male.style.left=e.touches[0].clientX-40+"px";
+check();
+};
+
+function check(){
+let d=Math.abs(male.getBoundingClientRect().left-
+female.getBoundingClientRect().left);
+
+if(d<50){
+popup.style.display="block";
+startLoading();
+}
+}
+
+function startLoading(){
+
+let width=0;
+
+let fakeLoad=setInterval(()=>{
+if(width>=90){
+clearInterval(fakeLoad);
+}else{
+width+=1;
+bar.style.width=width+"%";
+}
+},30);
+
+video.oncanplaythrough=function(){
+clearInterval(fakeLoad);
+bar.style.width="100%";
+
+setTimeout(()=>{
+loading.style.display="none";
+video.style.display="block";
+video.play();
+
+if(video.requestFullscreen){
+video.requestFullscreen();
+}
+},500);
+};
+
+video.load();
+}
+
+</script>
+
+</body>
+</html>
